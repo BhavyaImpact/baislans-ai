@@ -35,6 +35,14 @@ const app  = express();
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
+// --- ADD THESE TWO LINES HERE ---
+app.use(cors());          // Allows your Netlify frontend to talk to Render
+app.use(express.json());  // Allows your server to read the CSV data you send
+// --------------------------------
+
+// Now your routes follow
+app.use('/api/analyze', analyzeRoute);
+
 // ── [FIX #7] Dynamic CORS configuration ──────────────────────────────────────
 // Reads allowed origins from environment variables so production and dev
 // environments can each specify their own frontend URLs without code changes.
