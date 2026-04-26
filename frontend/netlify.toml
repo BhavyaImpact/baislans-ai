@@ -1,8 +1,10 @@
 [build]
   base = "frontend"
-  # This command forces permissions and then builds
-  command = "npm install && npm run build"
+  # 'npm ci' is cleaner than 'npm install' for servers
+  command = "npm ci && npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
+  # This tells npm to ignore the existing node_modules
+  NPM_FLAGS = "--include=dev"
