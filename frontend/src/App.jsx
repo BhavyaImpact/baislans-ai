@@ -349,11 +349,14 @@ export default function App() {
 // POSTs to /api/analyze (proxied to Express → Gemini)
 // Returns { explanation, warning?, cached? }
 async function callBackendAPI(summary) {
-  const res = await fetch('/api/analyze', {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ summary }),
-  });
+  // This version looks for your Render link first, then falls back to local if needed
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+const res = await fetch(`${API_URL}/api/analyze`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ summary }),
+});
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
