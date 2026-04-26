@@ -35,11 +35,19 @@ const app  = express();
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
-// --- ADD THESE TWO LINES HERE ---
-app.use(cors());          // Allows your Netlify frontend to talk to Render
-app.use(express.json());  // Allows your server to read the CSV data you send
-// --------------------------------
+// ── Correct Middleware Setup ────────────────────────────────────────────────
+// This handles the security "permission slip" for Netlify
+app.use(cors({
+  origin: 'https://baislansai.netlify.app', 
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type']
+}));
 
+// This allows the server to read your CSV data
+app.use(express.json()); 
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Rest of your code (app.use('/api/analyze', analyzeRoute); etc.)
 // Now your routes follow
 app.use('/api/analyze', analyzeRoute);
 
