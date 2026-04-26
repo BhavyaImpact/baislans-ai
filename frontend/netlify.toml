@@ -1,6 +1,7 @@
 [build]
   base = "frontend"
-  command = "npm install && npm run build"
+  # This deletes the broken folder and reinstalls everything fresh
+  command = "rm -rf node_modules && npm install && npm run build"
   publish = "dist"
 
 [build.environment]
