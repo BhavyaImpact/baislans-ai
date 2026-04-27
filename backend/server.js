@@ -63,19 +63,32 @@ app.use('/api/analyze', analyzeRoute);
 function buildAllowedOrigins() {
   const origins = [];
 
-  // Multi-origin support (comma-separated list)
-  if (process.env.FRONTEND_URLS) {
-    const parsed = process.env.FRONTEND_URLS
-      .split(',')
-      .map(url => url.trim())
-      .filter(Boolean);
-    origins.push(...parsed);
-  }
+ // --- UPDATED CORS CONFIGURATION ---
+const origins = ['http://localhost:5173', 'http://localhost:3000'];
 
-  // Single-origin support
-  if (process.env.FRONTEND_URL) {
-    origins.push(process.env.FRONTEND_URL.trim());
-  }
+// Manually add your Netlify URL here
+origins.push('https://baislansai.netlify.app');
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    if (origins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log(`[CORS] Blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+console.log(`[CORS] Allowed origins: ${origins.join(', ')}`);
+// ----------------------------------
 
   // Always allow localhost in development — never in production
   if (NODE_ENV !== 'production') {
