@@ -61,23 +61,22 @@ app.use('/api/analyze', analyzeRoute);
 //   Dev fallback:     If neither is set, allows localhost:3000 + localhost:5173 only
 //
 function buildAllowedOrigins() {
-  const origins = [];
-
- // --- UPDATED CORS CONFIGURATION ---
-const origins = ['http://localhost:5173', 'http://localhost:3000'];
-
-// Manually add your Netlify URL here
-origins.push('https://baislansai.netlify.app');
+ // ── [FIX] Final CORS Configuration ──────────────────────────────────────────
+const origins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://baislansai.netlify.app'
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
     
-    if (origins.indexOf(origin) !== -1) {
+    if (origins.includes(origin)) {
       callback(null, true);
     } else {
-      console.log(`[CORS] Blocked origin: ${origin}`);
+      console.log(`[CORS] ❌ Blocked origin: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -86,6 +85,9 @@ const corsOptions = {
   credentials: true
 };
 
+app.use(cors(corsOptions));
+console.log(`[CORS] ✅ Allowed origins: ${origins.join(', ')}`);
+// ─────────────────────────────────────────────────────────────────────────────
 app.use(cors(corsOptions));
 console.log(`[CORS] Allowed origins: ${origins.join(', ')}`);
 // ----------------------------------
